@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DiscordSafeList</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+    .box { background: #1e1e1e; padding: 20px; border-radius: 10px; text-align: center; width: 400px; }
+    input { width: 100%; padding: 10px; border-radius: 5px; border: none; margin-bottom: 10px; }
+    button { padding: 10px 15px; background: #5865F2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #4752c4; }
+    .result { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>DiscordSafeList</h1>
+    <p>Check if a Discord ID is blacklisted</p>
+    <input type="text" id="userId" placeholder="Enter Discord User ID">
+    <button onclick="checkUser()">Check</button>
+    <div id="result" class="result"></div>
+    <div id="blacklistDisplay" class="result"></div>
+  </div>
+
+  <script>
+    let blacklist = [];
+
+    // Load the blacklist from external JSON file
+    fetch('blacklist.json')
+      .then(response => response.json())
+      .then(data => {
+        blacklist = data;
+        document.getElementById("blacklistDisplay").textContent = `📋 Blacklisted IDs loaded: ${blacklist.length}`;
+      })
+      .catch(err => {
+        document.getElementById("blacklistDisplay").textContent = "⚠️ Could not load blacklist.json";
+      });
+
+    function checkUser() {
+      const id = document.getElementById("userId").value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!id) {
+        resultBox.textContent = "⚠️ Please enter a Discord ID";
+        return;
+      }
+
+      if (blacklist.includes(id)) {
+        resultBox.textContent = `❌ User ID ${id} is blacklisted.`;
+      } else {
+        resultBox.textContent = `✅ User ID ${id} is not blacklisted.`;
+      }
+    }
+  </script>
+</body>
+</html>
